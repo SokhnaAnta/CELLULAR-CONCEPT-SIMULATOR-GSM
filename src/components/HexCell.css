@@ -1,0 +1,45 @@
+.cell {
+    stroke: #000;
+    stroke-width: 0.1;
+  }
+  
+  .cell-black {
+    fill: #000; 
+  }
+  
+  .cell-1 {
+    fill: #ff9999; 
+  }
+  
+  .cell-2 {
+    fill: #99ccff; 
+  }
+  
+  .cell-3 {
+    fill: #99ff99; 
+  }
+  
+  .cell-4 {
+    fill: #ffff99;
+  }
+  
+  .cell-5 {
+    fill: #ffcc99; 
+  }
+  
+  .cell-6 {
+    fill: #cc99ff; 
+  }
+  
+  .cell-7 {
+    fill: #ff99cc; 
+  }
+  
+  
+  
+  .base-cluster {
+    stroke-width: 0.50;
+    stroke: rgb(11, 2, 2);
+    fill-opacity: 1; }
+  
+  
