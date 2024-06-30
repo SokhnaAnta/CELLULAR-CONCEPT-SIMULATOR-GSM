@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { HexGrid, Layout } from 'react-hexgrid';
-import HexCell from './HexCell';
-import './Network.css';
+import React, { useState, useEffect } from "react";
+import { HexGrid, Layout } from "react-hexgrid";
+import HexCell from "./HexCell";
+import "./Network.css";
 
 const Network = () => {
   const [pattern, setPattern] = useState(null);
@@ -20,7 +20,7 @@ const Network = () => {
     const cells = [];
     for (let q = -10; q <= 10; q++) {
       for (let r = -10; r <= 10; r++) {
-        cells.push({ q, r, s: -q - r, color: 'black', baseCluster: false });
+        cells.push({ q, r, s: -q - r, color: "black", baseCluster: false });
       }
     }
     return cells;
@@ -30,22 +30,45 @@ const Network = () => {
   const handleChange = (event) => {
     const newPattern = parseInt(event.target.value, 10);
     if (!isNaN(newPattern) && newPattern >= 1) {
-      setPattern(newPattern);
+      if (isOptimalValue(newPattern)) {
+        setPattern(newPattern);
+      } else {
+        alert("Ce n'est pas une valeur optimale !");
+      }
     } else {
       setPattern(null);
       setCells(initializeCells());
     }
   };
 
+  const isOptimalValue = (N) => {
+    for (let i = 0; i <= N; i++) {
+      for (let j = -N; j <= i; j++) {
+        if (i ** 2 + j ** 2 + i * j === N) {
+          return true;
+        }
+      }
+    }
+    return false;
+  };
   const generateBaseCluster = (N) => {
     const baseCluster = [];
     const directions = [
-      { q: 0, r: 0 }, { q: 1, r: 0 }, { q: 0, r: 1 },
-      { q: -1, r: 1 }, { q: -1, r: 0 }, { q: 0, r: -1 }, { q: 1, r: -1 }
+      { q: 0, r: 0 },
+      { q: 1, r: 0 },
+      { q: 0, r: 1 },
+      { q: -1, r: 1 },
+      { q: -1, r: 0 },
+      { q: 0, r: -1 },
+      { q: 1, r: -1 },
     ];
 
     for (let i = 0; i < N && i < directions.length; i++) {
-      baseCluster.push({ q: directions[i].q, r: directions[i].r, color: i + 1 });
+      baseCluster.push({
+        q: directions[i].q,
+        r: directions[i].r,
+        color: i + 1,
+      });
     }
 
     return baseCluster;
@@ -56,30 +79,33 @@ const Network = () => {
 
     const centerQ = -9;
     const centerR = 6;
-    baseCluster.forEach(baseCell => {
+    baseCluster.forEach((baseCell) => {
       const q = baseCell.q + centerQ;
       const r = baseCell.r + centerR;
-      let cell = replicatedCells.find(c => c.q === q && c.r === r);
+      let cell = replicatedCells.find((c) => c.q === q && c.r === r);
       if (cell) {
         cell.color = baseCell.color;
       }
-       cell = replicatedCells.find(c => c.q === baseCell.q && c.r === baseCell.r);
-       if (cell) {
+      cell = replicatedCells.find(
+        (c) => c.q === baseCell.q && c.r === baseCell.r
+      );
+      if (cell) {
         cell.baseCluster = true;
       }
     });
 
-    
     let isComplete = false;
     while (!isComplete) {
       isComplete = true;
-      replicatedCells.forEach(cell => {
-        if (cell.color === 'black') {
+      replicatedCells.forEach((cell) => {
+        if (cell.color === "black") {
           for (let i = 0; i <= N && isComplete; i++) {
-            for (let j =-N ; j <= i && isComplete; j++) {
+            for (let j = -N; j <= i && isComplete; j++) {
               if (i ** 2 + j ** 2 + i * j === N) {
-                let refCell = replicatedCells.find(c => c.q === cell.q - i && c.r === cell.r - j) ;
-                if (refCell && refCell.color !== 'black') {
+                let refCell = replicatedCells.find(
+                  (c) => c.q === cell.q - i && c.r === cell.r - j
+                );
+                if (refCell && refCell.color !== "black") {
                   cell.color = refCell.color;
                   isComplete = false;
                 }
@@ -91,7 +117,7 @@ const Network = () => {
     }
 
     // Exclure les cellules noires
-    return replicatedCells.filter(cell => cell.color !== 'black');
+    return replicatedCells.filter((cell) => cell.color !== "black");
   };
 
   return (
@@ -100,16 +126,26 @@ const Network = () => {
       <input
         id="pattern"
         type="number"
-        value={pattern || ''}
+        value={pattern || ""}
         onChange={handleChange}
         min="1"
         max="7"
       />
-      <HexGrid width={800} height={600} viewBox="-50 -50 100 100" className="hexgrid">
-        <Layout size={{ x: 5, y: 5 }} flat={true} spacing={1.1} origin={{ x: 0, y: 0 }}>
-          {cells.map(cell => (
+      <HexGrid
+        width={800}
+        height={600}
+        viewBox="-50 -50 100 100"
+        className="hexgrid"
+      >
+        <Layout
+          size={{ x: 5, y: 5 }}
+          flat={true}
+          spacing={1.1}
+          origin={{ x: 0, y: 0 }}
+        >
+          {cells.map((cell) => (
             <HexCell
-              key={'${cell.q}-${cell.r}'}
+              key={"${cell.q}-${cell.r}"}
               q={cell.q}
               r={cell.r}
               s={cell.s}
