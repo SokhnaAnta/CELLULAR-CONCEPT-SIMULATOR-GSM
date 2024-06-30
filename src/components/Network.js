@@ -59,13 +59,17 @@ const Network = () => {
     baseCluster.forEach(baseCell => {
       const q = baseCell.q + centerQ;
       const r = baseCell.r + centerR;
-      const cell = replicatedCells.find(c => c.q === q && c.r === r);
+      let cell = replicatedCells.find(c => c.q === q && c.r === r);
       if (cell) {
         cell.color = baseCell.color;
-        //cell.baseCluster = true;
+      }
+       cell = replicatedCells.find(c => c.q === baseCell.q && c.r === baseCell.r);
+       if (cell) {
+        cell.baseCluster = true;
       }
     });
 
+    
     let isComplete = false;
     while (!isComplete) {
       isComplete = true;
@@ -105,7 +109,7 @@ const Network = () => {
         <Layout size={{ x: 5, y: 5 }} flat={true} spacing={1.1} origin={{ x: 0, y: 0 }}>
           {cells.map(cell => (
             <HexCell
-              key={`${cell.q}-${cell.r}`}
+              key={'${cell.q}-${cell.r}'}
               q={cell.q}
               r={cell.r}
               s={cell.s}
